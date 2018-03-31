@@ -1,0 +1,2 @@
+a^(b*c) can be rewritten as a^(b^c)
+so a^(N!) = A^(1^(2^3(^4^(5....))))

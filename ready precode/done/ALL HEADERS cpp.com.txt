@@ -1,0 +1,89 @@
+
+C library:
+
+#include <cassert>    (assert.h)
+#include <cctype>    (ctype.h)
+#include <cerrno>    (errno.h)
+#include <cfenv>    (fenv.h)
+#include <cfloat>    (float.h)
+#include <cinttypes>    (inttypes.h)
+#include <ciso646>    (iso646.h)
+#include <climits>    (limits.h)
+#include <clocale>    (locale.h)
+#include <cmath>    (math.h)
+#include <csetjmp>    (setjmp.h)
+#include <csignal>    (signal.h)
+#include <cstdarg>    (stdarg.h)
+#include <cstdbool>    (stdbool.h)
+#include <cstddef>    (stddef.h)
+#include <cstdint>    (stdint.h)
+#include <cstdio>    (stdio.h)
+#include <cstdlib>    (stdlib.h)
+#include <cstring>    (string.h)
+#include <ctgmath>    (tgmath.h)
+#include <ctime>    (time.h)
+#include <cuchar>    (uchar.h)
+#include <cwchar>    (wchar.h)
+#include <cwctype>    (wctype.h)
+
+Containers:
+
+#include <array>
+#include <deque>
+#include <forward_list>
+#include <list>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+Input/Output:
+
+#include <fstream>
+#include <iomanip>
+#include <ios>
+#include <iosfwd>
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <sstream>
+#include <streambuf>
+
+Multi-threading:
+
+#include <atomic>
+#include <condition_variable>
+#include <future>
+#include <mutex>
+#include <thread>
+
+Other:
+
+#include <algorithm>
+#include <bitset>
+#include <chrono>
+#include <codecvt>
+#include <complex>
+#include <exception>
+#include <functional>
+#include <initializer_list>
+#include <iterator>
+#include <limits>
+#include <locale>
+#include <memory>
+#include <new>
+#include <numeric>
+#include <random>
+#include <ratio>
+#include <regex>
+#include <stdexcept>
+#include <string>
+#include <system_error>
+#include <tuple>
+#include <typeindex>
+#include <typeinfo>
+#include <type_traits>
+#include <utility>

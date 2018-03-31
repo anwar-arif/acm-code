@@ -1,0 +1,19 @@
+Given a rooted tree. Two player moves in turn. In each turn a player
+removes an edge(u -> v ) the subtree of node v is deleted from the tree
+The player can't move loses the game. If both player moves optimaly 
+determine the winner .
+
+Solution : run a dfs from the root 
+	if( ans > 0 ) first player wins
+	else second player wins
+
+void dfs( int u ) {
+    if( adj[u].size() == ) return 0 ;
+    int ans = 0 ;
+    for( int v : adj[u] ) {
+  	if( !vis[v] ) {
+	    ans ^= ( 1 + dfs(v) ) ;
+	}
+    }
+    return ans ;
+}
