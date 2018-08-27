@@ -1,94 +1,73 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define pf printf
-#define sc scanf
-#define ll long long int
-#define pb push_back
-#define sc1i(a) sc("%d",&a)
-#define sc2i(a,b) sc("%d%d",&a,&b)
-#define sc3i(a,b,c) sc("%d%d%d",&a,&b,&c)
-#define sc4i(a,b,c,d) sc("%d%d%d%d",&a,&b,&c,&d)
-#define sc1ll(a) sc("%I64d",&a)
-#define sc2ll(a,b) sc("%I64d%I64d",&a,&b)
-#define sc3ll(a,b,c) sc("%I64d%I64d%I64d",&a,&b,&c)
-#define sc4ll(a,b,c,d) sc("%I64d%I64d%I64d%I64d",&a,&b,&c,&d)
-#define pi acos(-1)
-#define mod 100000007
-#define inf 1<<28
-#define mx 10001
+#include<bits/stdc++.h>
+using namespace std ;
 
-int cnt,dist[mx+1];
+const int N = (int) 1e4 + 10 ;
+const int inf = (int) 2e9 ;
 
-struct edge
-{
-        int u,w;
-        bool operator < (const edge & p)const
-        {
-                return w > p.w;
-        }
+struct edge{
+    int u , w , used ;
+    edge(){}
+    edge( int _u , int _cost , int _used ) {
+        u = _u , w = _cost , used = _used ;
+    }
+    bool operator < (const edge &p ) const {
+        return w > p.w ;
+    }
 };
 
-vector<int>g[mx+1],cost[mx+1];
+vector< edge > adj[N] ;
+int level[15][N] ;
 
-int fun(int s,int t)
-{
-        priority_queue<edge>q;
-        int len,i,u,v;
-        edge get;
-        get.u = s;
-        get.w = 0;
-        dist[s] = 0;
-        q.push(get);
-        cnt = 0;
-        while(!q.empty()){
-                edge top = q.top();q.pop();
-                u = top.u;pf("u is %d\n",u);
-                if(u == t)return dist[u];
-                len = (int)g[u].size();
-                for(i = 0; i<len;i++){
-                        v = g[u][i];
-                        if(dist[u] + cost[u][v] < dist[v]){
-                                dist[v] = dist[u] + cost[u][v];
-                                edge get;
-                                get.u = v;
-                                get.w = dist[v];
-                                q.push(get);
-                                ++cnt;pf("v = %d   dist = %d\n",v,dist[v]);
-                        }
-                }
+void init( int n ) {
+    for( int i = 0 ; i <= n ; i++ ) {
+        adj[i].clear() ;
+        for( int j = 0 ; j < 15 ; j++ ) {
+            level[j][i] = inf ;
         }
-        return -1;
+    }
 }
 
-void reset()
-{
-        for(int i = 0; i < mx;i++){
-                g[i].clear();
-                cost[i].clear();
-                dist[i] = inf;
+int dij( int s , int t , int d ) {
+    priority_queue< edge > pq ;
+    pq.push( edge(s , 0 , 0) ) ;
+    level[0][s] = 0 ;
+    while( !pq.empty() ) {
+        edge top = pq.top() ; pq.pop() ;
+        int u = top.u , len = (int) adj[u].size() ;
+        if( u == t ) return top.w ;
+        for( int i = 0 ; i < len ; i++ ) {
+            int v = adj[u][i].u ;
+            int cost = top.w + adj[u][i].w ;
+            int usd = top.used + adj[u][i].used ;
+            if( level[usd][v] > cost && usd <= d ) {
+                level[usd][v] = cost ;
+                pq.push( edge(v , level[usd][v] , usd) ) ;
+            }
         }
+    }
+    return -1 ;
 }
 
-int main()
-{
-        int tst,cas,n,m,k,d,ans,i,u,v,w;
-        sc1i(tst);
-        for(cas = 1; cas <= tst;cas++){
-                reset();
-                sc4i(n,m,k,d);
-                for(i = 0;i < (m+k) ;i++){
-                        sc3i(u,v,w);
-                        g[u].pb(v);
-                        g[v].pb(u);
-                        cost[u].pb(w);
-                        cost[v].pb(w);
-                }
-                ans = fun(0,n-1);
-                if((ans == -1 ) || (cnt > d)){
-                        pf("Case %d: Impossible\n",cas);
-                }else{
-                      pf("Case %d: %d\n",cas,ans);
-                }
+int main() {
+//    freopen("in.txt" , "r" , stdin ) ;
+    int T , cas = 0 ; scanf("%d" , &T ) ;
+    while( T-- ) {
+        int n , m , k , d ; scanf("%d %d %d %d" , &n , &m , &k , &d ) ;
+        init(n) ;
+        for( int i = 1 ; i <= m ; i++ ) {
+            int u , v , w ; scanf("%d %d %d" , &u , &v , &w ) ;
+            u += 1 , v += 1 ;
+            adj[u].push_back( edge(v , w , 0) ) ;
         }
-        return 0;
+        for( int i = 1 ; i <= k ; i++ ) {
+            int u , v , w ; scanf("%d %d %d" , &u , &v , &w ) ;
+            u += 1 , v += 1 ;
+            adj[u].push_back( edge(v , w , 1) ) ;
+        }
+        int ans = dij(1 , n , d) ;
+        printf("Case %d: " , ++cas ) ;
+        if( ans == -1 ) printf("Impossible\n") ;
+        else printf("%d\n" , ans ) ;
+    }
+    return 0 ;
 }

@@ -1,29 +1,27 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include<bits/stdc++.h>
+using namespace std ;
 
-const int M = 55;
+const int N = (int) 1e3 + 10 ;
+const int inf = (int) 2e9 ;
+const long long mod = (long long) 998244353 ;
 
-long long bc[M+5][M+5] ;
+long long C[N][N] ;
 
-void pre() {
-    for(int i = 0 ; i < M ; i++ ) bc[i][0] = 1;
-    for(int i = 1; i < M ; i++ ) {
-        bc[i][i] = 1 ;
-        bc[i][1] = i ;
-    }
-    for(int i = 3; i < M ; i++ ) {
-        for(int j = 2;j < i ; j++ ) {
-            bc[i][j] = ( bc[i-1][j-1] + bc[i-1][j] ) ;
+void calc() {
+    for( int i = 0 ; i < N ; i++ ) {
+        C[i][0] = C[i][i] = 1 ;
+        for( int j = 0 ; j < i ; j++ ) {
+            C[i][j] = ( C[i - 1][j - 1] + C[i - 1][j] ) % mod ;
         }
     }
 }
 
-
-int main() {
-    pre() ;
+int main(){
+//    freopen("in.txt" , "r" , stdin ) ;
+    calc() ;
     int n , k ;
-    while( scanf("%d %d" , &n , &k ) != EOF ) {
-        cout << bc[n][k] << endl ;
+    while( scanf("%d %d" , &n , &k) != EOF ) {
+        printf("%lld\n" , C[n][k] ) ;
     }
-    return 0;
+    return 0 ;
 }
