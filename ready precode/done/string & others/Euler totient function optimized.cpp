@@ -28,9 +28,9 @@ int main()
 {
       cal_phi();
       int n;
-      while(sc1i(n) == 1)
+      while(scanf("%d" , &n) == 1)
       {
-          pf("%d\n",phi[n]);
+          printf("%d\n",phi[n]);
       }
       return 0;
 }

@@ -145,6 +145,7 @@ void printSA(int n)
 ///in sorted list
 int main()
 {
+    freopen("C:\\Users\\anwar\\Dropbox\\programming\\code\\codeforces\\in.txt" , "r" , stdin) ;
     string a,b;
     int n,p,q;
     int tcase,cas=1;
@@ -152,7 +153,7 @@ int main()
     while(tcase--)
     {
         ///start
-        
+
 	cin>>text;
         buildSA(SZ(text));
         buildLCP(SZ(text));
