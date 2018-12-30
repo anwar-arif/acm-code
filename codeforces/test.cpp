@@ -1,49 +1,5 @@
-#include <cassert>
-#include <cctype>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-#include <vector>
-#include <deque>
-#include <list>
-#include <set>
-#include <map>
-#include <bitset>
-#include <stack>
-#include <queue>
-#include <algorithm>
-#include <functional>
-#include <iterator>
-#include <numeric>
-#include <utility>
-#include <fstream>
-#include <climits>
-#include <complex>
-#include <new>
-#include <memory>
-#include <time.h>
-//#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-
-#define pf printf
-#define sc scanf
-#define ll long long int
-#define ull unsigned ll
-
-#define sc1i(a) sc("%d",&a)
-#define sc2i(a,b) sc("%d%d",&a,&b)
-#define sc3i(a,b,c) sc("%d%d%d",&a,&b,&c)
-#define sc4i(a,b,c,d) sc("%d%d%d%d",&a,&b,&c,&d)
-
-#define sc1ll(a) sc("%lld",&a)
-#define sc2ll(a,b) sc("%lld%lld",&a,&b)
-#define sc3ll(a,b,c) sc("%lld%lld%lld",&a,&b,&c)
-#define sc4ll(a,b,c,d) sc("%lld%lld%lld%lld",&a,&b,&c,&d)
 
 #define pb push_back
 #define pi acos(-1.0)
@@ -56,8 +12,6 @@ using namespace std;
 #define cnttz(a) __builtin_ctz(a)
 #define cntlz(a) __builtin_clz(a)
 
-#define rep(i,k,n) for(__typeof(n)i = k ; i <= n; i++)
-#define rrep(i,k,n) for(__typeof(k)i = k ; i >= n; i--)
 #define show(a) cerr <<#a<< " = " << a << endl;
 
 #define wait system("pause")
@@ -85,7 +39,6 @@ struct debugger{
 
 void make_unique(vector<int> &a){ sort(a.begin(), a.end());
     a.erase(unique(a.begin(), a.end()), a.end()); }
-ll bigmod(ll B,ll P,ll M){ ll R=1; while(P>0)  {if(P%2==1){R=(R*B)%M;}P/=2;B=(B*B)%M;} return R;} /// (B^P)%M
 
 //ll gcd(ll a,ll b){if(b == 0)return a;return gcd(b,a%b);}
 //ll lcm(ll a,ll b){return (a/gcd(a,b))*b;}
@@ -93,6 +46,38 @@ ll bigmod(ll B,ll P,ll M){ ll R=1; while(P>0)  {if(P%2==1){R=(R*B)%M;}P/=2;B=(B*
 int on(int n,int pos){return n=n|(1<<pos);}
 int off(int n,int pos){return n = n & ~(1<<pos);}
 bool check(int n,int pos){return (bool)(n&(1<<pos));}
+
+const long long mod = 998244353;
+
+inline void add(long long &a, long long b) {
+  a += b ;
+  if(a >= mod) a -= mod ;
+}
+
+inline void sub(long long &a, long long b) {
+  a -= b ;
+  if(a < 0) a += mod ;
+}
+
+inline long long mul(long long a, long long b) {
+  return ((long long) a * b % mod) ;
+}
+
+inline long long modpow(long long b, long long p) {
+  long long res = 1 ;
+  while(p > 0) {
+    if((p & 1LL)) {
+      res = mul(res, b) ;
+    }
+    b = mul(b, b) ;
+    p >>= 1LL ;
+  }
+  return res ;
+}
+/*(x)^(-1)*/
+inline long long modinv(long long b) {
+    return modpow(b, mod - 2) ;
+}
 
 const int N = (int)1e5 + 10;
 
