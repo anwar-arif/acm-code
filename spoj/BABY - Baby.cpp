@@ -1,40 +1,48 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
-int on(int n,int pos){return n=n|(1<<pos);}
-int off(int n,int pos){return n = n & ~(1<<pos);}
-bool check(int n,int pos){return (bool)(n&(1<<pos));}
+const int N = (int) 17 ;
+const int inf = (int) 2e9 ;
 
-const int N = 17  ;
+int dp[N][(1 << N)] , a[N] , b[N] , n ;
+int vis[N][(1 << N)] , cas = 0 ;
 
-int dp[N][(1 << N)] , vis[N][(1 << N)] ;
-int cas = 0 , n ;
-int baby[N] , sol[N] ;
+int C( int i , int j ) {
+    return ( abs(i - j) + abs(a[i] - b[j]) ) ;
+}
 
-int rec( int pos , int mask ) {
-    if( pos >= n ) return 0 ;
-    int &v = vis[pos][mask] ;
-    int &ret = dp[pos][mask] ;
+int F( int i , int mask ) {
+    if( i >= n ) return 0 ;
+
+    int &v = vis[i][mask] ;
+    int &ret = dp[i][mask] ;
+
     if( v == cas ) return ret ;
     v = cas ;
-    ret = 10000000 ;
-    for( int i = 0 ; i < n ; i++ ) {
-        if( check( mask , i ) == 0 ) {
-            int d = abs( pos - i ) + abs( baby[i] - sol[pos] ) ;
-            ret = min( ret , d + rec( pos+1 , on(mask , i) ) ) ;
+
+    ret = inf ;
+    for( int j = 0 ; j < n ; j++ ) {
+        if( (mask & (1 << j)) == 0 ) {
+            ret = min( ret , C(i , j) + F(i + 1 , (mask | (1 << j)) ) ) ;
         }
     }
+
     return ret ;
 }
 
-int main() {
+int main(){
+//    freopen("in.txt" , "r" , stdin ) ;
     memset( vis , 0 , sizeof(vis) ) ;
     while( scanf("%d" , &n ) != EOF ) {
         if( n == 0 ) break ;
-        for( int i = 0 ; i < n ; i++ ) scanf("%d" , &baby[i] ) ;
-        for( int i = 0 ; i < n ; i++ ) scanf("%d" , &sol[i] ) ;
-        ++cas ;
-        printf("%d\n" , rec( 0 , 0 ) ) ;
+        cas += 1 ;
+
+        for( int i = 0 ; i < n ; i++ ) scanf("%d" , &a[i] ) ;
+        for( int i = 0 ; i < n ; i++ ) scanf("%d" , &b[i] ) ;
+
+        int ans = F(0 , 0) ;
+        printf("%d\n" , ans ) ;
     }
+
     return 0 ;
 }
