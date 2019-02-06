@@ -4,23 +4,27 @@ using namespace std ;
 const int N = (int) 2e6 + 10 ;
 const int inf = (int) 2e9 ;
 
-set< long long > s ;
+char s[N] ;
 
 int main() {
 //    freopen("in.txt" , "r" , stdin ) ;
-    int n , k ; cin >> n ;
-    for( int k = 1 ; k <= n ; k++ ) {
-        long long sum = 0 ;
-        for( int i = 0 ; ; i += k ) {
-            if( i % n == 0 ) {
-                break ;
+    int q ; scanf("%d" , &q ) ;
+    while( q-- ) {
+        int n ; scanf("%d" , &n ) ;
+        scanf("%s" , &s ) ;
+        if( n == 2 ) {
+            if( s[0] >= s[1] ) printf("NO\n") ;
+            else {
+                printf("YES\n") ;
+                printf("2\n%c %c\n" , s[0] , s[1] ) ;
             }
-            sum += (i % n) + 1 ;
+        } else {
+            printf("YES\n") ;
+            printf("2\n") ;
+            printf("%c " , s[0] ) ;
+            for( int i = 1 ; i < n ; i++ ) printf("%c" , s[i] ) ;
+            printf("\n") ;
         }
-        s.insert(sum) ;
-    }
-    for( auto it : sum ) {
-        cout << *it << endl ;
     }
     return 0 ;
 }
