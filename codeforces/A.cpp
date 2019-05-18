@@ -1,30 +1,28 @@
 #include<bits/stdc++.h>
-using namespace std ;
+using namespace std;
 
-const int N = (int) 2e6 + 10 ;
-const int inf = (int) 2e9 ;
+const int N = (int) 1e3 + 10;
+const int inf = (int) 2e9;
 
-char s[N] ;
+int n, cnt[N];
+string s;
 
 int main() {
-//    freopen("in.txt" , "r" , stdin ) ;
-    int q ; scanf("%d" , &q ) ;
-    while( q-- ) {
-        int n ; scanf("%d" , &n ) ;
-        scanf("%s" , &s ) ;
-        if( n == 2 ) {
-            if( s[0] >= s[1] ) printf("NO\n") ;
-            else {
-                printf("YES\n") ;
-                printf("2\n%c %c\n" , s[0] , s[1] ) ;
-            }
-        } else {
-            printf("YES\n") ;
-            printf("2\n") ;
-            printf("%c " , s[0] ) ;
-            for( int i = 1 ; i < n ; i++ ) printf("%c" , s[i] ) ;
-            printf("\n") ;
-        }
+//    freopen("in.txt", "r", stdin);
+    cin >> n;
+    for (int i = 0; i < 26; i++) cnt[i] = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> s;
+        cnt[s[0] - 'a'] += 1;
     }
+    int mx = 0, ans = 0;
+    for (int i = 0; i < 26; i++) {
+        if (cnt[i] <= 1) continue;
+        mx = cnt[i];
+        int p = mx / 2, q = mx - p;
+        ans += (p * (p - 1)) / 2;
+        ans += (q * (q - 1)) / 2;
+    }
+    cout << ans << endl;
     return 0 ;
 }
