@@ -1,58 +1,51 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int N = (int) 1e3 + 10;
+const int N = (int) 2e6 + 10;
 const int inf = (int) 2e9;
 
-int k, n, m;
-string tmp[5] = {
-    "aeiou", "eioua", "iouae", "ouaei", "uaeio"
-};
+long long arr[N], brr[N], n, m, ta, tb, k;
 
-string vowel = "aeiou";
-
-string s[N];
-
-int can() {
-    for (int i = 0; i < n; i++) {
-        s[i] = tmp[i % 5];
-    }
-    for (int c = 5; c < m; c++) {
-        for (int r = 0; r < n; r++) {
-            s[r] += vowel[r % 5];
-        }
-    }
-    for (int i = 0; i < n; i++) {
-        cout << s[i];
-    }
-    cout << endl;
-    return 1;
+void no() {
+    cout << -1 << endl;
+    exit(0);
 }
 
-int check(int k) {
-    for (int i = 5; i * i <= k; i++) {
-        if (k % i == 0) {
-            if ((k / i) >= 5) {
-                n = i, m = k / i;
-                if (can() == 1) {
-                    return 1;
-                }
-            }
+long long F(int x) {
+    long long which = arr[x + 1];
+    int lo = 1, hi = m, mid, ans = inf;
+    while (lo <= hi) {
+        mid = (lo + hi) / 2;
+        if (brr[mid] >= which) {
+            ans = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
         }
     }
-    return 0;
-}
-
-void solve() {
-    if (check(k) == 0) {
-        printf("-1\n");
-        return;
-    }
+    return ans;
 }
 
 int main() {
 //    freopen("in.txt", "r", stdin);
-    scanf("%d", &k);
-    solve();
+    cin >> n >> m >> ta >> tb >> k;
+    for (int i = 1; i <= n; i++) {
+        cin >> arr[i];
+        arr[i] += ta;
+    }
+    for (int i = 1; i <= m; i++) {
+        cin >> brr[i];
+    }
+    if (k >= n || k >= m) {
+        no();
+    }
+    long long answer = (long long) 2e14;
+    answer *= -1LL;
+    for (int i = 0; i <= k; i++) {
+        int idx = F(i) + k - i;
+        if (idx > m) no();
+        answer = max(answer, brr[idx] + tb);
+    }
+    cout << answer << endl;
     return 0 ;
 }

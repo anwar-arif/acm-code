@@ -2,43 +2,57 @@
 using namespace std;
 
 const int N = (int) 2e6 + 10;
-const int inf = (int) 2e8;
+const int inf = (int) 2e9;
 
-int n, arr[N];
+int n, arr[N], pos[N];
+vector <pair<int, int>> ans;
 
-int F(int lo) {
-    int hi = n, mid, ans = -1, x = arr[lo];
-    while (lo <= hi) {
-        mid = (lo + hi) / 2;
-        if (arr[mid] <= x + x) {
-            lo = mid + 1;
-            ans = mid;
-        } else {
-            hi = mid - 1;
-        }
-    }
-    return ans;
+void alter(int b, int c) {
+    ans.push_back({b, c});
+    pos[arr[b]] = c;
+    pos[arr[c]] = b;
+    swap(arr[b], arr[c]);
+    cerr << b << " " << c << endl;
 }
 
-int solve(int l) {
-    int x = F(l);
-    if (x < 0) return 0;
-    return (x - l);
+void solve(int b) {
+    cerr << b << endl;
+    int mid = (n / 2), c = pos[b], a = 1, d = n;
+    if (abs(b - c) >= mid) {
+        alter(b, c);
+    } else if (b <= mid) {
+        alter(a, c);
+        alter(a, d);
+        alter(b, d);
+        alter(a, d);
+        alter(a, c);
+    } else {
+
+    }
 }
 
 int main() {
-//    freopen("in.txt", "r", stdin);
-    scanf("%d", &n);
+    freopen("in.txt", "r", stdin);
+    cin >> n;
     for (int i = 1; i <= n; i++) {
-        int x; scanf("%d", &x);
-        if (x < 0) arr[i] = -x;
-        else arr[i] = x;
+        cin >> arr[i];
+        pos[arr[i]] = i;
     }
-    sort(arr + 1, arr + 1 + n);
-    long long answer = 0;
+
     for (int i = 1; i <= n; i++) {
-        answer += solve(i);
+        if (arr[i] != i) {
+            solve(i);
+        }
     }
-    printf("%lld\n", answer);
+
+    for (int i = 1; i <= n; i++) {
+        cerr << arr[i] << " = ";
+    }cerr << endl;
+
+    int len = (int) ans.size();
+    cout << len << endl;
+    for (auto p: ans) {
+        cout << p.first << " " << p.second << endl;
+    }
     return 0 ;
 }
