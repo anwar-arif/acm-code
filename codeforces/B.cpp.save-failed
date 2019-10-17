@@ -1,0 +1,117 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+const int N = (int) 2e6 + 10 ;
+const int inf = (int) 2e9 ;
+
+int sum[3 * N] ,  n , l ;
+long long arr[N] ;
+
+void init() {
+    memset(sum , 0 , sizeof(sum)) ;
+}
+
+void upd( int node , int b , int e , int i , int j , int v ) {
+    if( e < i || b > j ) return ;
+    if( b >= i && e <= j ) {
+        sum[node] = v ; return ;
+    }
+    int lft = 2 * node , rt = lft + 1 , mid = (b + e) / 2 ;
+    upd(lft , b , mid , i , j , v) ;
+    upd(rt , mid + 1 , e , i , j , v) ;
+    sum[node] = sum[lft] + sum[rt] ;
+}
+
+void alive( int indx ) {
+    upd(1 , 1 , n , indx , indx , 1) ;
+}
+void kill( int indx ) {
+    upd(1 , 1 , n , indx , indx , 0) ;
+}
+
+/*returns range sum*/
+int query( int node , int b , int e , int i , int j ) {
+    if( e < i || b > j ) return 0 ;
+    if( b >= i && e <= j ) return sum[node] ;
+    int lft = 2 * node , rt = lft + 1 , mid = (b + e) / 2 ;
+    return (query(lft , b , mid , i , j) + query(rt , mid + 1 , e , i , j)) ;
+}
+
+int get_sum(int l , int r) {
+    if( l > r ) return 0 ;
+    return query(1 , 1 , n , l , r) ;
+}
+
+int kth( int node , int b , int e , int k ) {
+    if( b == e ) return b ;
+    int lft = 2 * node , rt = lft + 1 , mid = (b + e) / 2 ;
+    if( k > sum[lft] ) return kth(rt , mid + 1 , e , k - sum[lft] ) ;
+    return kth(lft , b , mid , k) ;
+}
+
+int get_kth( int k ) {
+    return kth(1 , 1 , n , k) ;
+}
+
+pair< int , long long > F( int idx ) {
+    pair< int , long long > lft , rt ;
+    lft = rt = {-1 , -1} ;
+    int k = 0 , pos , tot = sum[1] ;
+    long long val ;
+    if( (k = get_sum(1 , idx - 1)) > 0 ) {
+        pos = get_kth(k) ;
+        val = abs(arr[idx] - arr[pos]) ;
+        lft = {pos , val} ;
+    }
+    if( (k = get_sum(idx + 1 , n)) > 0 ) {
+        pos = get_kth(tot - k + 1) ;
+        val = abs(arr[idx] - arr[pos]) ;
+        rt = {pos , val} ;
+    }
+
+    if( lft.first == -1 ) {
+        pos = get_kth(tot) ;
+        val = abs(arr[n] - arr[pos]) + arr[idx] ;
+        lft = {pos , val + 1} ;
+    }
+    if( rt.first == -1 ) {
+        pos = get_kth(1) ;
+        val = abs(arr[n] - arr[idx]) + arr[pos] ;
+        rt = {pos , val + 1} ;
+    }
+    /**compare*/
+    if( lft.second >= rt.second ) return lft ;
+    return rt ;
+}
+
+void solve() {
+    for( int i = 1 ; i <= n ; i++ ) {
+        alive(i) ;
+    }
+    kill(1) ;
+    int cur_indx = 1 ;
+    long long answer = 0 ;
+    while(sum[1] > 0) {
+        auto p = F(cur_indx) ;
+        answer += p.second ;
+        cur_indx = p.first ;
+        kill(cur_indx) ;
+//        cout <<"Idx " << arr[cur_indx] << endl ;
+    }
+    memset(dp , -1 , sizeof(dp)) ;
+    printf("%lld\n" , calc(1 , 0)) ;
+
+//    printf("%lld\n" , answer ) ;
+}
+
+int main() {
+//    freopen("in.txt" , "r" , stdin ) ;
+    init() ;
+    scanf("%d %d" , &l , &n ) ;
+    n += 1 ; arr[1] = 0 ;
+    for( int i = 2 ; i <= n ; i++ ) {
+        scanf("%lld" , &arr[i] ) ;
+    }
+    solve() ;
+    return 0 ;
+}
