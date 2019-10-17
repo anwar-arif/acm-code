@@ -1,5 +1,7 @@
-
+#include<bits/stdc++.h>
 const int N = 500 + 5;
+
+using ll = long long;
 
 const ll M1 = 10000009;
 const ll B1 = 33;
@@ -11,17 +13,15 @@ string s;
 ll h1[100010] , h2[100010];
 ll pow1[100010] , pow2[100010];
 
-void init()
-{
+void init() {
     int n = s.size() , i;
 
     pow1[0] = pow2[0] = 1;
     h1[0] = h2[0] = 0 ;
 
-    for(i = 1; i <= n; i++)///  calculate power
-    {
+    ///  calculate power
+    for(i = 1; i <= n; i++) {
         pow1[i] = (B1 * pow1[i-1]) % M1;
-
         pow2[i] = (B2 * pow2[i-1]) % M2;
     }
 
