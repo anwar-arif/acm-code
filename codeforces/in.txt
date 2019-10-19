@@ -1,2 +1,4 @@
-15 4
-abacabadabacaba
+3
+###
+#.#
+###
