@@ -1,100 +1,73 @@
-#include<iostream>
-#include<vector>
-#include<stack>
-#include<algorithm>
-#include<cstdio>
-#include<cstring>
+#include<bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 11111;
-int dis[MAXN],fin[MAXN],belong[MAXN],deg[MAXN],ans,scc,t,n,m,depth;
-vector<int> g[MAXN],gs[MAXN];
-stack<int> s;
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
 
-void init()
-{
-   for(int i=0; i<MAXN; i++)g[i].clear(),gs[i].clear();
-   memset(fin,-1,sizeof(fin));
-   memset(belong,-1,sizeof(belong));
-   memset(deg,0,sizeof(deg));
-   ans = scc = depth = 0 ;
-   while(!s.empty())s.pop();
+vector <int> adj[N], SCC[N];
+stack <int> stk;
+int nodes, edges, scc_cnt = 0, depth = 0;
+int in_stack[N], dis[N], low[N];
+
+void init(int n) {
+    scc_cnt = 0, depth = 0;
+    for (int i = 0; i <= n; i++) {
+        adj[i].clear(), SCC[i].clear();
+        dis[i] = -1, in_stack[i] = 0;
+    }
+    while (!stk.empty()) stk.pop();
 }
 
-void tarjan(int u)
-{
-   dis[u] = fin[u] = depth++;
-   s.push(u);
+void Tarjan(int u, int root = 1) {
+    dis[u] = low[u] = depth++;
+    in_stack[u] = 1;
+    stk.push(u);
 
-   for(int i=0; i<(int)g[u].size(); i++)
-   {
-       int v = g[u][i];
-       if(fin[v] == -1)
-       {
-           tarjan(v);
-           dis[u] = min(dis[u],dis[v]);///dis = temporary circle number
-       }
-       else if(belong[v] == -1)
-       {
-           dis[u] = min(dis[u],fin[v]);
-       }
-   }
-   if(dis[u]==fin[u])
-   {
-       int v;
-       do
-       {
-           v = s.top();
-           belong[v] = scc;///final circle number
-           s.pop();
-       }
-       while(v!=u);
-       scc++;
-   }
+    for (int v: adj[u]) {
+        if (dis[v] == -1) {
+            Tarjan(v);
+            low[u] = min(low[u], low[v]);
+        } else if (in_stack[v] == 1) {
+            low[u] = min(low[u], dis[v]);
+        }
+    }
+
+    if (dis[u] == low[u]) {
+        ++scc_cnt;
+        while (!stk.empty() && low[u] <= dis[stk.top()]) {
+            SCC[scc_cnt].push_back(stk.top());
+            in_stack[stk.top()] = 0;
+            stk.pop();
+        }
+    }
 }
 
-void DFS(int u)
-{
-   fin[u] = 1;
-   for(int i=0; i<(int)g[u].size(); i++)
-   {
-       int v = g[u][i];
-       if(belong[u]!=belong[v])deg[belong[v]]++;
-       if(!fin[v])DFS(v);
-   }
+void solve() {
+    for (int i = 1; i <= nodes; i++) {
+        if (dis[i] == -1) {
+            Tarjan(i);
+        }
+    }
+
+    for (int i = 1; i <= scc_cnt; i++) {
+        for (int v: SCC[i]) {
+            printf("%d ", v);
+        }
+        printf("\n");
+    }
 }
 
-void solve()
-{
-   for(int i=0; i<scc; i++)if(!deg[i])ans++;
-}
+int main() {
+//    freopen("in.txt", "r", stdin);
+    scanf("%d %d", &nodes, &edges);
+    init(nodes);
 
-int main()
-{
-   scanf("%d",&t);
-   for(int cas=1; cas<=t; cas++)
-   {
-       init();
-       scanf("%d%d",&n,&m);
-       while(m--)
-       {
-           int a,b;
-           scanf("%d%d",&a,&b);
-           a--,b--;
-           g[a].push_back(b);
-       }
-       for(int i=0; i<n; i++){
-            if(fin[i]==-1)tarjan(i);
-       }
-       memset(fin,0,sizeof(fin));
-       for(int i=0; i<n; i++){
-            if(!fin[i])DFS(i);///fin = visit and fast see
-       }
-       solve();
-       for(int i = 0 ; i < n;i++){
-           pf("i %d belong %d\n",i,belong[i]);
-       }
-       printf("Case %d: %d\n",cas,ans);
-   }
-   return 0;
+    for (int i = 0; i < edges; i++) {
+        int u, v; scanf("%d %d", &u, &v);
+        adj[u].push_back(v);
+    }
+
+    solve();
+
+    return 0;
 }
