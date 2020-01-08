@@ -1,84 +1,66 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-#define pf printf
-#define sc scanf
-#define ll long long
-#define pb push_back
 
-int main()
-{
-    int deg[110] , res[110] , i , j , n , m , k , siz , u , v , y;
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
 
-    int connected[110][110];
+vector <int> adj[N];
+int nodes, edges, deg[N];
 
-    while(sc("%d%d",&n,&m) == 2)
-    {
-        if(n == 0 && m == 0)break;
-
-        queue<int>q;
-
-        memset(deg,0,sizeof(deg));
-        memset(res,0,sizeof(res));
-
-        for(i = 1; i <= n; i++)
-        {
-            for(j = 1; j <= n ; j++)
-            {
-                connected[i][j] = 0;
-            }
-        }
-
-        for(i = 1; i <= m; i++)
-        {
-            sc("%d%d",&u,&v);
-
-            connected[u][v] = 1;
-
-            ++deg[v];///indegree
-        }
-
-        for(i = 1; i <= n; i++)
-        {
-            if(deg[i] == 0)q.push(i);
-        }
-
-        k = 0;///result index
-
-        while(!q.empty())
-        {
-            u = q.front();
-            q.pop();
-
-            res[++k] = u;///b = result array
-
-            for(i = 1; i <= n; i++)
-            {
-                if(connected[u][i] == 1)
-                {
-                    --deg[i];
-                    if(deg[i] == 0)
-                    {
-                        q.push(i);
-                    }
-                }
-            }
-        }
-
-        for(i = 1; i < k ; i++)
-        {
-            pf("%d ",res[i]);
-        }
-        pf("%d\n",res[k]);
-
+void init(int n) {
+    for (int i = 0; i <= n; i++) {
+        adj[i].clear();
+        deg[i] = 0;
     }
+}
+
+void solve() {
+    queue <int> qu;
+    for (int i = 1; i <= nodes; i++) {
+        if (deg[i] == 0) {
+            qu.push(i);
+        }
+    }
+
+    vector <int> res;
+    while (!qu.empty()) {
+        int u = qu.front(); qu.pop();
+        res.push_back(u);
+
+        for (int v: adj[u]) {
+            --deg[v];
+            if (deg[v] == 0) {
+                qu.push(v);
+            }
+        }
+    }
+
+    printf("Topological order: ");
+    for (int v: res) {
+        printf("%d ", v);
+    }
+    printf("\n");
+}
+
+int main() {
+//    freopen("in.txt", "r", stdin);
+    scanf("%d %d", &nodes, &edges);
+    init(nodes);
+
+    for (int i = 0; i < edges; i++) {
+        int u, v; scanf("%d %d", &u, &v);
+        adj[u].push_back(v);
+        deg[v] += 1;
+    }
+    solve();
+
     return 0;
 }
 
-//input :
-//5 4
-//1 2
-//2 3
-//1 3
-//1 5
-//
-//output : 1 4 2 5 3
+/*input :
+5 4
+1 2
+2 3
+1 3
+1 5
+output : 1 4 2 5 3*/
