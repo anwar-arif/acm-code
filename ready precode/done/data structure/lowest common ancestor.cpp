@@ -1,94 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
 
-const int N = 10000+5;
-const int LOG = 20 ;
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
+const int LOG = 20;
 
-vector<int>g[N];
-int level[N],par[N][LOG+5],t[N],n;
+vector <int> adj[N];
+int level[N], par[N][LOG + 5];
+int nodes, edges, queries, root = 1;
 
-void dfs( int u , int p , int d ) {
-    int len = SZ(g[u]) ;
-    level[u] = d ;
-    for( int i = 0 ;i < len ;i++ ){
-        int v = g[u][i];
-        if( v != p ) {
-            t[v] = u ;
-            dfs( v , u , d+1 ) ;
+void dfs(int u, int p, int d) {
+    level[u] = d;
+    for (int v: adj[u]) {
+        if (v != p) {
+            par[v][0] = u;
+            dfs(v, u, d + 1);
         }
     }
 }
 
-void ith_parent(){
-
-    for(int i = 1;i <= n;i++){
-        for(int j = 0;j <= LOG;j++){
+void buildLca() {
+    for (int i = 1; i <= nodes; i++) {
+        for (int j = 1; j <= LOG; j++) {
             par[i][j] = -1;
         }
     }
 
-    for(int i = 1; i<= n;i++){
-        par[i][0] = t[i];
-    }
-
-    for(int j = 1;j <= LOG ; j++){
-        for(int i = 1; i <= n;i++){
-            if(par[i][j-1] != -1){
-                par[i][j] = par[ par[i][j-1] ][j-1];
+    for (int j = 1; j <= LOG; j++) {
+        for (int i = 1; i <= nodes; i++) {
+            if (par[i][j - 1] != -1) {
+                par[i][j] = par[par[i][j - 1]][j - 1];
                 ///as 2^(x-1) + 2^(x-1) = 2^x
             }
         }
     }
 }
 
-int lca(int p,int q){
+int queryLca(int p, int q) {
+    if (level[p] < level[q]) swap(p, q);
 
-    if(level[p] < level[q]){
-        int tmp = p; p = q; q = tmp;
-    }
-
-    for(int i = LOG; i >= 0;i--){
-        if(level[p] - power(2,i) >= level[q]){
+    for (int i = LOG; i >= 0; i--) {
+        if (level[p] - (1 << i) >= level[q]) {
             p = par[p][i];
         }
     }
 
-    if(p == q)return p;
+    if (p == q) return p;
 
-    for(int i = LOG ; i >= 0;i--){
-        if(par[p][i] !=-1 and par[p][i] != par[q][i]){
+    for (int i = LOG; i >= 0; i--) {
+        if (par[p][i] != -1 && par[p][i] != par[q][i]) {
             p = par[p][i];
             q = par[q][i];
         }
     }
-    return t[p];
+
+    return par[p][0];
 }
 
-int main()
-{
-      #ifndef ONLINE_JUDGE
-      //Read;
-      //Write;
-      #endif
-      int edge,u,v,root,a,b;
-      sc2i(n,edge);
-      for(int i = 0 ; i < edge;i++){
-          sc2i(u,v);
-          g[u].pb(v);
-          t[v] = u;///t[] = imidiate parent of i
-      }
-      sc1i(root);
-      sc2i(a,b);
+int main() {
+//    freopen("in.txt", "r", stdin);
+    scanf("%d %d", &nodes, &edges);
+    for (int i = 1; i <= edges; i++) {
+        int u, v; scanf("%d %d", &u, &v);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
 
-      t[root] = root ;
-      dfs(root , root , 0) ;
-      ///bfs to make level array
-      ///root can be find by top sort
+    par[root][0] = root;
 
-      ith_parent();///calculate 2^i th parent of every node
+    dfs(root, root, 0);
+    buildLca();
 
-      int ans = lca(a,b);
+    scanf("%d", &queries);
 
-      pf("lca is %d\n",ans);
+    while (queries--) {
+        int u, v; scanf("%d %d", &u, &v);
+        printf("%d\n", queryLca(u, v));
+    }
 
-      return 0;
+    return 0;
 }
-

@@ -1,104 +1,57 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#define pf printf
-#define sc scanf
+const int N = (int) 30 + 10;
+const int inf = (int) 2e9;
 
-#define ll long long int
-#define pb push_back
-#define SZ(a) (int)a.size()
-#define mem(a,x) memset(a,x,sizeof(a))
-
-#define sc1i(a) sc("%d",&a)
-#define sc2i(a,b) sc("%d%d",&a,&b)
-#define sc3i(a,b,c) sc("%d%d%d",&a,&b,&c)
-#define sc4i(a,b,c,d) sc("%d%d%d%d",&a,&b,&c,&d)
-
-#define sc1ll(a) sc("%lld",&a)
-#define sc2ll(a,b) sc("%lld%lld",&a,&b)
-#define sc3ll(a,b,c) sc("%lld%lld%lld",&a,&b,&c)
-#define sc4ll(a,b,c,d) sc("%lld%lld%lld%lld",&a,&b,&c,&d)
-
-#define SIZ 40+5
-
-long long int dp[2][2][SIZ][SIZ];
-
-vector<ll>inp;
-
+vector <long long> inp;
+long long dp[2][2][N][N];
 int len;
-///count the numbers with 0 within a range
 
-ll rec( bool isStart, bool cmp, int pos, int zeros )
-{
-    if( pos >= len ) return zeros;
+long long F(bool isStart, bool cmp, int pos, int zero) {
+    if (pos >= len) return zero;
+    long long &ret = dp[isStart][cmp][pos][zero];
+    if (ret != -1) return ret;
 
-    ll &ret = dp[isStart][cmp][pos][zeros];
-
-    if( ret != -1 )return ret;
-
-    int limt, i, tmp;
-
-    limt = cmp ? inp[pos] : 9;///cmp = 1 if it was full fil previous digit
-
+    int lim = cmp ? inp[pos] : 9;
     ret = 0;
 
-    if( !isStart )
-    {
-        for( i = 0; i <= limt; i++ )
-        {
-            ret += rec( isStart, ( cmp and i == limt ), pos+1, zeros +(i==0) );
+    if (!isStart) {
+        for (int i = 0; i <= lim; i++) {
+            ret += F(isStart, cmp && (i == lim), pos + 1, zero + (i == 0));
         }
+    } else {
+        for (int i = 1; i <= lim; i++) {
+            ret += F(0, cmp && (i == lim), pos + 1, zero + (i == 0));
+        }
+        ret += F(1, 0, pos + 1, 0);
     }
-    else
-    {
-        for( i = 1; i<=limt; i++ )
-        {
-            ret += rec( 0, ( cmp and i == limt ), pos+1, zeros +(i==0) );
-        }
 
-        ret += rec( 1, 0, pos+1, 0 );
-    }
     return ret;
 }
 
-ll cal(ll x)
-{
-    if(x<0)return 0;
-
-    if(x<=9)return 1;
-
+long long solve(long long x) {
+    if (x < 0) return 0;
+    if (x <= 9) return 1;
     inp.clear();
-
-    while(x)
-    {
-        inp.pb(x%10);
+    while (x) {
+        inp.push_back(x % 10);
         x /= 10;
     }
-
-    reverse(inp.begin(),inp.end());
-
-    len = SZ(inp);
-
-    mem(dp,-1);
-
-    return rec( 1, 1, 0, 0) + 1;
+    reverse(inp.begin(), inp.end());
+    len = (int) inp.size();
+    memset(dp, -1, sizeof(dp));
+    return F(1, 1, 0, 0) + 1;
 }
 
-int main()
-{
-      int tst,cas = 0 ;
-
-      ll a,b;
-
-      sc1i(tst);
-
-      while(tst--)
-      {
-        sc2ll(a,b);
-
-        ll ans = cal(b) - cal(a-1);
-
-        pf("Case %d: %lld\n",++cas,ans);
-      }
-      return 0;
+int main() {
+//    freopen("in.txt", "r", stdin);
+    int T, cas = 0; scanf("%d", &T);
+    while (T--) {
+        long long a, b; scanf("%lld %lld", &a, &b);
+        long long answer = solve(b) - solve(a - 1);
+        printf("Case %d: %lld\n", ++cas, answer);
+    }
+    return 0;
 }
+
