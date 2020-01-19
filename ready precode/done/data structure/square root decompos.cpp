@@ -1,107 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
 
-#define SIZ 10000+5
-#define ub upper_bound
+const int N = (int) 2e4 + 10;
+const int inf = (int) 2e9;
 
-int main()
-{
-      int n,q;
-      while(sc2i(n,q) != EOF)
-      {
-          int sq = (int)sqrt(n);
-          vector<vector<int> > act,input;
+vector <int> orig[N], temp[N];
+int n, queries, block;
 
-          int s = n / sq;
-          for(int i = 0  ;i < s;i++)
-          {
-              vector<int>temp;
-              int x;
-              for(int j = 0;j < sq;j++)
-              {
-                  sc1i(x);
-                  temp.pb(x);
-              }
-              act.pb(temp);
-              input.pb(temp);
-          }
-          if(s*sq != n)
-          {
-              vector<int>temp;
-              int x;
-              for(int i = s*sq ;i < n;i++)
-              {
-                  sc1i(x);
-                  temp.pb(x);
-              }
-              act.pb(temp);
-              input.pb(temp);
-          }
+int solve() {
+    int l, r, val; scanf("%d %d %d", &l, &r, &val);
+    l--, r--; /// l and r are 1-based index
 
-          int siz = input.size();
+    int answer = 0;
+    int leftBlock = l / block;
+    int rightBlock = r / block;
 
-          for(int i = 0 ; i < siz; i++)
-          {
-              sort(input[i].begin(),input[i].end());
-          }
-          getchar();
-          ///find the number of value which are smaller than x within range l,r
-          while(q--)
-          {
-              char ch;
-              int st,en;
-              sc("%c",&ch);
-              if(ch == 'C')
-              {
-                  int x;
-                  sc3i(st,en,x);
-                  getchar();
-                  st--;en--;///cause zero based
+    l -= leftBlock * block;
+    r -= rightBlock * block;
 
-                  int beg = st/sq;
-                  int endd = en/sq;
+    if (leftBlock == rightBlock) {
+        for (int i = l; i <= r; i++) {
+            if (orig[leftBlock][i] <= val) {
+                answer += 1;
+            }
+        }
+    } else {
+        for (int i = l; i < (int) orig[leftBlock].size(); i++) {
+            if (orig[leftBlock][i] <= val) answer += 1;
+        }
+        for (int i = 0; i <= r; i++) {
+            if (orig[rightBlock][i] <= val) answer += 1;
+        }
+        for (int i = leftBlock + 1; i < rightBlock; i++) {
+            answer += upper_bound(temp[i].begin(), temp[i].end(), val) - temp[i].begin();
+        }
+    }
 
-                  st -= beg*sq;
-                  en -= endd*sq;
-
-                  if(beg == endd)
-                  {
-                      int cnt = 0;
-                      for(int i = st;i<=en;i++)
-                      {
-                          if(act[beg][i] <= x)++cnt;
-                      }
-                      pf("%d\n",cnt);
-                  }
-                  else
-                  {
-                      int cnt = 0;
-                      for(int i = st ; i < act[beg].size();i++)
-                      {
-                          if(act[beg][i] <= x)++cnt;
-                      }
-                      for(int i = 0;i <= en;i++)
-                      {
-                          if(act[endd][i] <= x)++cnt;
-                      }
-                      for(int i = beg+1;i<endd;i++)
-                      {
-                          cnt += upper_bound(input[i].begin(),input[i].end(),x)-input[i].begin();
-                      }
-                      pf("%d\n",cnt);
-                  }
-              }
-              else{
-                  int id,x;
-                  sc2i(id,x);
-                  getchar();
-                  id--;
-                  int beg = id/sq;
-                  id -= beg*sq;
-                  act[beg][id] = x;
-                  input[beg] = act[beg];
-                  sort(input[beg].begin(),input[beg].end());
-              }
-          }
-      }
-      return 0;
+    return answer;
 }
 
+int main() {
+//    freopen("in.txt", "r", stdin);
+    scanf("%d %d", &n, &queries);
+    block = (int) sqrt(n);
+
+    for (int i = 0; i < n; i++) {
+        int x; scanf("%d", &x);
+        orig[i / block].push_back(x);
+        temp[i / block].push_back(x);
+    }
+
+    int len = (n / block) + (n % block != 0);
+    for (int i = 0; i < len; i++) {
+        sort(temp[i].begin(), temp[i].end());
+    }
+
+    /// find the number of value which are
+    /// smaller than or equal to val within range l,r
+    while (queries--) {
+        int queryType; scanf("%d", &queryType);
+
+        if (queryType == 1) {
+            printf("%d\n", solve());
+        } else {
+            int index, value; scanf("%d %d", &index, &value);
+            index -= 1; /// index is 1-based
+
+            int blockNo = index / block;
+            index -= blockNo * block;
+
+            orig[blockNo][index] = value;
+            temp[blockNo] = orig[blockNo];
+
+            sort(temp[blockNo].begin(), temp[blockNo].end());
+        }
+    }
+    return 0;
+}
