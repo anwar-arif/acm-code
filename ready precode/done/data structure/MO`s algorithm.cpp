@@ -1,98 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
 
-#define SIZ 300000+5
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
 
-struct data{
-    int L,R,i;
-}q[SIZ];
 
-//finding distinct elements in a range with MO`s algo
+/// finding distinct elements in a range with MO`s algo
 
-int a[SIZ] , cnt[1011115] ,ans[SIZ] ,answer , block ;
+int block, n, cnt[N], arr[N], ans[N], unq;
 
-bool cmp(data a,data b)
-{
-    if(a.L/block != b.L/block)
-    {
-        return a.L/block < b.L/block;
+struct data {
+    int L, R, id;
+    data(){}
+    data(int L, int R, int id):
+        L(L), R(R), id(id) {}
+
+    bool operator < (const data &p) const {
+        if (L / block != p.L / block) {
+            return L / block < p.L / block;
+        }
+        return R < p.R;
     }
-    return a.R < b.R;
+}Q[N];
+
+void ins(int pos) {
+    cnt[arr[pos]]++;
+    if (cnt[arr[pos]] == 1) unq += 1;
 }
 
-void add(int pos)
-{
-    cnt[a[pos]]++;
-    if(cnt[a[pos]] == 1)++answer;
+void del(int pos) {
+    cnt[arr[pos]]--;
+    if (cnt[arr[pos]] == 0) unq -= 1;
 }
 
-void remove(int pos)
-{
-    cnt[a[pos]]--;
-    if(cnt[a[pos]] == 0)--answer;
+int main() {
+//    freopen("in.txt", "r", stdin);
+    memset(cnt, 0, sizeof(cnt));
+
+    int queries; scanf("%d %d", &n, &queries);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    block = (int) sqrt(n) + 1;
+    for (int i = 0; i < queries; i++) {
+        int l, r; scanf("%d %d", &l, &r);
+        --l, --r;
+        Q[i] = data(l, r, i);
+    }
+
+    sort(Q, Q + queries);
+    unq = 0;
+    int curL = 0, curR = 0;
+
+    for (int i = 0; i < queries; i++) {
+        int L = Q[i].L, R = Q[i].R;
+
+        while (curL < L) del(curL++);
+        while (curL > L) ins(curL - 1), curL--;
+        while (curR <= R) ins(curR++);
+        while (curR > R + 1) del(curR - 1), curR--;
+
+        ans[Q[i].id] = unq;
+    }
+
+    for (int i = 0; i < queries; i++) {
+        printf("%d\n", ans[i]);
+    }
+    return 0;
 }
 
-int main()
-{
-      #ifndef ONLINE_JUDGE
-      //Read;
-      //Write;
-      #endif
-      int n;
-      while(sc1i(n) != EOF)
-      {
-          answer = 0;
-          mem(cnt,0); mem(ans,0);
-
-          for(int i = 0 ; i<n;i++)
-          {
-              sc1i(a[i]);
-          }
-          block = 2 + (int)sqrt(n);
-          int m , l , r;
-          sc1i(m);
-          for(int i = 0 ; i < m;i++)
-          {
-              sc2i(l,r);
-              l -= 1;
-              r -= 1;
-              q[i].L = l;
-              q[i].R = r;
-              q[i].i = i;
-          }
-
-          sort(q , q + m , cmp);
-          answer = 0;
-          int curL = 0,curR = 0;
-
-          for(int i = 0 ;i < m;i++)
-          {
-              int L = q[i].L;
-              int R = q[i].R;
-
-              while(curL < L){
-                  remove(curL);
-                  curL++;
-              }
-              while(curL > L){
-                  add(curL - 1);
-                  curL--;
-              }
-              while(curR <= R){
-                  add(curR);
-                  curR++;
-              }
-              while(curR > R+1){
-                  remove(curR - 1);
-                  curR--;
-              }
-              ans[q[i].i] = answer;
-          }
-          for(int i = 0 ; i < m;i++)
-          {
-              pf("%d\n",ans[i]);
-          }
-      }
-      return 0;
-}
-/*
-complexity N*sqrt(N)*log N
-*/
+/// complexity N*sqrt(N)*log N
