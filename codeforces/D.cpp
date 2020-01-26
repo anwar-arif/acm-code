@@ -4,64 +4,57 @@ using namespace std;
 const int N = (int) 3e5 + 10;
 const int inf = (int) 2e9;
 
-vector <int> pos[N];
-int n, tree[4 * N], arr[N], brr[N];
+int n, m, x = 0, y = 0;
+long long arr[N][11];
 
-void upd(int node, int b, int e, int i, int j, int v) {
-    if (e < i || b > j) return;
-    if (b >= i && e <= j) {
-        tree[node] = v;
-        return;
+int can(long long val) {
+    vector <int> indx[1 << m];
+    for (int i = 0; i < n; i++) {
+        int mask = 0;
+        for (int j = 0; j < m; j++) {
+            if (arr[i][j] >= val) {
+                mask |= (1 << j);
+            }
+        }
+        indx[mask].push_back(i);
+        if (mask == (1 << m) - 1) {
+            x = i, y = i;
+            return 1;
+        }
     }
-    int lft = 2 * node, rt = lft + 1, mid = (b + e) / 2;
-    upd(lft, b, mid, i, j, v);
-    upd(rt, mid + 1, e, i, j, v);
-    tree[node] = min(tree[lft], tree[rt]);
-}
-
-int query(int node, int b, int e, int i, int j) {
-    if (e < i || b > j) return inf;
-    if (b >= i && e <= j) return tree[node];
-    int lft = 2 * node, rt = lft + 1, mid = (b + e) / 2;
-    int x = query(lft, b, mid, i, j);
-    int y = query(rt, mid + 1, e, i, j);
-    return min(x, y);
+    for (int i = 0; i < (1 << m); i++) {
+        if (indx[i].size() == 0) continue;
+        for (int j = 0; j < (1 << m); j++) {
+            if (indx[j].size() == 0) continue;
+            if ((i | j) == (1 << m) - 1) {
+                x = indx[i][0];
+                y = indx[j][0];
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 
 int main() {
 //    freopen("in.txt", "r", stdin);
-    int T; scanf("%d", &T);
-    while (T--) {
-        scanf("%d", &n);
-        for (int i = 1; i <= n; i++) pos[i].clear();
-        for (int i = 1; i <= n; i++) {
-            int x; scanf("%d", &x);
-            pos[x].push_back(i);
+    scanf("%d %d", &n, &m);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%lld", &arr[i][j]);
         }
-        for (int i = 1; i <= n; i++) scanf("%d", &brr[i]);
-        for (int i = 1; i <= n; i++) upd(1, 1, n, i, i, inf);
-        for (int i = 1; i <= n; i++) {
-            reverse(pos[i].begin(), pos[i].end());
-            if (!pos[i].empty()) {
-                upd(1, 1, n, i, i, pos[i].back());
-            }
-        }
-        bool yes = true;
-        for (int i = 1; i <= n; i++) {
-            int b = brr[i];
-            if (pos[b].empty()) {
-                yes = false;
-                break;
-            }
-            int p = pos[b].back();
-            if (query(1, 1, n, 1, b) < p) {
-                yes = false;
-                break;
-            }
-            pos[b].pop_back();
-            upd(1, 1, n, b, b, pos[b].empty() ? inf : pos[b].back());
-        }
-        puts(yes ? "YES" : "NO");
     }
+    long long lo = 0, hi = (long long) 2e9, mid;
+    int p = 0, q = 0;
+    while (lo <= hi) {
+        mid = (lo + hi) / 2;
+        if (can(mid)) {
+            lo = mid + 1LL;
+            p = x, q = y;
+        } else {
+            hi = mid - 1LL;
+        }
+    }
+    printf("%d %d\n", p + 1, q + 1);
     return 0 ;
 }

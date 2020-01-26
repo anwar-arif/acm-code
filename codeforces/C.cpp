@@ -1,44 +1,43 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int N = (int) 1e6 + 10;
+const int N = (int) 2e6 + 10;
 const int inf = (int) 2e9;
 
-vector <long long> primes;
-vector <bool> isPrime(N, 1);
+int state[2][N], row = 2, col, block = 0;
 
-void sieve() {
-    for (int i = 2; i < N; i++) {
-        if (isPrime[i]) {
-            for (int j = i + i; j < N; j += i) {
-                isPrime[j] = 0;
+int dx[] = {-1, 1, -1, -1, 1, 1};
+int dy[] = {0, 0, -1, 1, -1, 1};
+
+int valid(int x, int y) {
+    return (x >= 0 && x < row && y >= 0 && y < col);
+}
+
+void solve(int x, int y) {
+    state[x][y] ^= 1;
+    for (int i = 0; i < 6; i++) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (valid(nx, ny)) {
+            if (state[nx][ny] & state[x][y]) {
+                ++block;
+            } else if (state[nx][ny] & (state[x][y] ^ 1)) {
+                --block;
             }
         }
     }
-    for (int i = 2; i < N; i++) {
-        if (isPrime[i]) {
-            primes.push_back(i + 0LL);
-        }
-    }
+    puts(block == 0 ? "Yes" : "No");
 }
 
 int main() {
 //    freopen("in.txt", "r", stdin);
-    sieve();
-    long long n; scanf("%lld", &n);
-    long long answer = n;
-    for (long long p : primes) {
-        if (p > (n + 1) / 2) {
-            break;
-        }
-        if (n % p == 0) {
-            answer = p;
-            break;
-        }
+    int queries; scanf("%d %d", &col, &queries);
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) state[i][j] = 0;
     }
-    if (n > answer + answer) {
-        answer = 1;
+    while (queries--) {
+        int x, y; scanf("%d %d", &x, &y);
+        x--, y--;
+        solve(x, y);
     }
-    printf("%lld\n", answer);
-    return 0 ;
+    return 0;
 }
