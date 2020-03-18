@@ -1,58 +1,29 @@
-#include < bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int N = 50 + 5;
-
-stack<int>st;
-int a[N]  , n ;
-
-int histogram(){
-    while(!st.empty())st.pop();
-    int area = 0, mx_area = 0;
-    int i;
-    for(i = 1; i <= n;){
-        if(st.empty() || a[ st.top() ] <= a[i]){
-            st.push(i++);
+int getHistogram(vector <int> &height) {
+    int len = (int) height.size();
+    stack <int> stk;
+    stk.push(-1);
+    int maxArea = 0;
+    for (int i = 0; i < len; i++) {
+        while (stk.top() != -1 && height[stk.top()] >= height[i]) {
+            int top = stk.top(); stk.pop();
+            int val = height[top];
+            /// All heights between left(stk.top()) and right(i) are at least val
+            maxArea = max(maxArea, val * (i - stk.top() - 1));
         }
-        else{
-            int top = st.top(); st.pop();
-            if(st.empty())area = a[top] * (i - 1);
-            else{
-                area = a[top] * ( i - st.top() - 1 );
-            }
-            mx_area = max(mx_area , area);
-        }
+        stk.push(i);
     }
-    while(!st.empty()){
-        int top = st.top();
-        st.pop();
-        //if stack is empty means everything till i has to be
-        //greater or equal to input[top] so get area by
-        //input[top] * i;
-        if(st.empty()){
-            area = a[top] * (i - 1);
-        }
-        //if stack is not empty then everythin from i-1 to input.peek() + 1
-        //has to be greater or equal to input[top]
-        //so area = input[top]*(i - stack.peek() - 1);
-        else{
-            area = a[top] * (i - st.top() - 1);
-        }
-        mx_area = max(area , mx_area);
+    while (stk.top() != -1) {
+        int top = stk.top(); stk.pop();
+        int val = height[top];
+        maxArea = max(maxArea, val * (len - stk.top() - 1));
     }
-    return mx_area;
+    return maxArea;
 }
 
-///complexity O(n) ; n = size of array
-
-int main(){
-    int x;
-    while(sc1i(n) != EOF){
-        for(int i = 1; i <= n;i++){
-            sc1i(x);
-            a[i] = x;
-        }
-        int ans = histogram();
-    }
-    return 0;
+int main() {
+    vector <int> height = vector <int> {1, 0, 2};
+    cout << getHistogram(height) << endl;
 }

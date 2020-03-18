@@ -1,65 +1,49 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-int dp[100],dir[100],val[100],n;
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
 
-int longest(int u)
-{
-    if(dp[u] != -1)return dp[u];
+int dp[N], arr[N], nxt[N], n;
 
+int F(int i) {
+    if (dp[i] != -1) return dp[i];
     int maxi = 0;
 
-    for(int v = u+1 ; v <= n; v++)
-    {
-        if(val[v] > val[u])
-        {
-            int x = longest(v);
-            if(x > maxi)
-            {
-                maxi = x;
-                dir[u] = v;
+    for (int j = i + 1; j <= n; j++) {
+        if (arr[j] > arr[i]) {
+            int cur = F(j);
+            if (cur > maxi) {
+                maxi = cur;
+                nxt[i] = j;
             }
         }
     }
 
-    dp[u] = maxi+1;
-
-    return dp[u];
+    dp[i] = maxi + 1;
+    return dp[i];
 }
 
-int main()
-{
-    int n,i,x,lis,start;
-    while(sc1i(n) == 1)
-    {
-        for(i = 1; i<= n; i++)
-        {
-            sc1i(val[i]);
-        }
-
-        mem(dp,-1);
-        mem(dir,-1);
-
-        lis = 0;
-        start;
-
-        for(i = 1; i<= n; i++)
-        {
-            x = longest(i);
-
-            pf("longest path from %d is %d\n",i,x);
-
-            if(x > lis)
-            {
-                lis = x;
-                start = i;
-            }
-        }
-
-        pf("LIS %d starting point %d\n",lis,start);
+int main() {
+//    freopen("in.txt", "r", stdin);
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++) {
+        scanf("%d", &arr[i]);
     }
 
+    memset(dp, -1, sizeof(dp));
+    memset(nxt, -1, sizeof(nxt));
+
+    int lis = 0, starting = 0;
+
+    for (int i = 1; i <= n; i++) {
+        if (F(i) > lis) {
+            lis = F(i), starting = i;
+        }
+    }
+
+    printf("LIS is %d, starting from index %d\n", lis, starting);
     return 0;
 }
-complexity :
-n^2;
+
+/* Complexity: n ^ 2 */

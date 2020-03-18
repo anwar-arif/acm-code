@@ -1,31 +1,41 @@
-char arr[]={'a','b','c','d'};
-vector<char>result;
-int taken[20]={0};
-void call()
-{
-	if(result.size()==4)
-	{
-		for(int i=0;i<4;i++)
-        {
-            printf("%c",result[i]);
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = (int) 2e6 + 10;
+const int inf = (int) 2e9;
+
+vector <char> arr{'a', 'b', 'c', 'd'};
+vector <char> result;
+int taken[20], n;
+
+void backtrack() {
+    if (result.size() == n) {
+        for (char c: result) {
+            printf("%c", c);
         }
-		puts("");
-		return;
-	}
-	for(int i=0;i<4;i++)
-	{
-		if(taken[i]==0)
-		{
-			taken[i]=1; result.push_back(arr[i]);
+        printf("\n");
+        return;
+    }
 
-			call();
+    for (int i = 0; i < n; i++) {
+        if (taken[i] == 0) {
+            taken[i] = 1;
+            result.push_back(arr[i]);
 
-			taken[i]=0; result.pop_back();
-		}
-	}
+            backtrack();
+
+            taken[i] = 0;
+            result.pop_back();
+        }
+    }
 }
-int main()
-{
-	call();
+
+int main() {
+//    freopen("in.txt", "r", stdin);
+    n = (int) arr.size();
+    memset(taken, 0, sizeof(taken));
+
+    backtrack();
+
+    return 0;
 }
-complexity : n*(2^n);
