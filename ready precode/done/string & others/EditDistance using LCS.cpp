@@ -1,61 +1,38 @@
-// A Naive recursive C++ program to find minimum number
-// operations to convert str1 to str2
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-// Utility function to find minimum of three numbers
-int min(int x, int y, int z)
-{
-   return min(min(x, y), z);
-}
+int editDistance(string& source, string& target) {
+    int lens = (int) source.size();
+    int lent = (int) target.size();
 
-int editDist(string str1, string str2, int m, int n)
-{
-    // Create a table to store results of subproblems
-    int dp[m+1][n+1];
-    for(int i = 0;i<=m;i++)dp[0][i] = i;
-    for(int i = 0;i<=n;i++)dp[i][0] = i;
-    // Fill d[][] in bottom up manner
-    for (int i=1; i<=m; i++)
-    {
-        for (int j=1; j<=n; j++)
-        {
-            // If first string is empty, only option is to
-            // isnert all characters of second string
-            if (i==0)
-                dp[i][j] = j;  // Min. operations = j
+    vector<vector<int>> dp = vector<vector<int>> (lens + 1, vector <int> (lent + 1, 0));
 
-            // If second string is empty, only option is to
-            // remove all characters of second string
-            else if (j==0)
-                dp[i][j] = i; // Min. operations = i
+    /** dp[i][j] = minimum operations to convert first i length of source to first j length of target*/
 
-            // If last characters are same, ignore last char
-            // and recur for remaining string
-            else if (str1[i-1] == str2[j-1])
-                dp[i][j] = dp[i-1][j-1];
+    for (int i = 0; i <= lens; i++) {
+        for (int j = 0; j <= lent; j++) {
+            /** insert j characters of target string*/
+            if (i == 0) dp[i][j] = j;
 
-            // If last character are different, consider all
-            // possibilities and find minimum
-            else
-                dp[i][j] = 1 + min(dp[i][j-1],  // Insert
-                                   dp[i-1][j],  // Remove
-                                   dp[i-1][j-1]); // Replace
+            /** delete i characters of source string*/
+            else if (j == 0) dp[i][j] = i;
+            else {
+                if (source[i - 1] == target[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+                else {
+                    dp[i][j] = 1 + min(
+                                       dp[i][j - 1], /**insert*/
+                                       min(dp[i - 1][j], /**delete*/
+                                           dp[i - 1][j - 1])); /**replace*/
+                }
+            }
         }
     }
 
-    return dp[m][n];
+    return dp[lens][lent];
 }
 
-// Driver program
-int main()
-{
-    // your code goes here
-    string str1,str2;
-    while(cin>>str1>>str2)
-    {
-        cout << editDist( str1 , str2 , str1.length(), str2.length())<<endl;
-    }
-
+int main() {
+    string a = "abcdef", b = "agced";
+    cout << editDistance(a, b) << endl;
     return 0;
 }
