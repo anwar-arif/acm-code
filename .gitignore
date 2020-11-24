@@ -4,4 +4,5 @@
 *.in
 *.out
 *.save-failed
+*.cpp.save
 *.html

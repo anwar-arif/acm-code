@@ -39,3 +39,6 @@ int main() {
 
     return 0;
 }
+/*
+Complexity: O(2 ^ n)
+*/

@@ -37,13 +37,8 @@ void solve() {
 }
 
 int main() {
-    /*scan characters untill a newline*/
-    scanf("%[^\n]", &s);
-    solve();
-    int i = 0;
-    for (i = 0; i < sz; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
+    for (int i = 0; i < n; i++) {
+	printf("Okay\n");
+}
     return 0;
 }

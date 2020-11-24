@@ -1,77 +1,81 @@
+#include<bits/stdc++.h>
+using namespace std;
 
-const int N = 10000+5;
-
-struct node
-{
-    bool is_end;
-    int prefix;
-    node* child[26];
-
-}*head;
-
-void init()
-{
-    head = new node();
-    head ->is_end = false;
-    head ->prefix = 0;
-}
-
-void add(string s)
-{
-    node* cur = head;
-    cur -> prefix++;
-    int len = SZ(s);
-    for(int i = 0 ; i< len;i++){
-        int id = s[i] - 'a';
-        if(cur->child[id] == NULL){
-            cur -> child[id] = new node();
+class TrieTree {
+private:
+    struct Node {
+        bool isEnd;
+        int prefix;
+        vector<Node*> child;
+        Node() {
+            child.resize(26);
+            for (int i = 0; i < 26; i++) {
+                child[i] = NULL;
+            }
+            isEnd = false;
+            prefix = 0;
         }
-        cur = cur -> child[id];
-        cur -> prefix++;
-    }
-    cur -> is_end = true;
-}
+    };
 
-bool search(string s)
-{
-    node* cur = head;
-    int len = SZ(s);
-    for(int i = 0 ; i < len;i++){
-        int id = s[i] - 'a';
-        if(cur ->child[id] == NULL){
-            return false;
+    Node* head;
+
+public:
+    TrieTree() {
+        head = new Node();
+    }
+
+    void add(string s) {
+        Node* cur = head;
+        cur->prefix++;
+
+        int len = (int) s.size();
+        for (int i = 0; i < len; i++) {
+            int id = s[i] - 'a';
+            if (cur->child[id] == NULL) {
+                cur->child[id] = new Node();
+            }
+            cur = cur->child[id];
+            cur->prefix++;
         }
-        cur = cur -> child[id];
+        cur->isEnd = true;
     }
-    return cur->is_end;
-}
 
-int cnt_prefix(string s)
-{
-    node* cur = head;
-    int cnt = 0;
-    int len = SZ(s);
-    for(int i = 0 ; i < len;i++){
-        int id = s[i] - 'a';
-        if(cur -> child[id] == NULL){
-            return 0;
+    bool search(string s) {
+        Node* cur = head;
+        int len = (int) s.size();
+
+        for (int i = 0; i < len; i++) {
+            int id = s[i] - 'a';
+            if (cur->child[id] == NULL) {
+                return false;
+            }
+            cur = cur->child[id];
         }
-        cur = cur ->child[id];
-        //cnt += cur->prefix;
+        return cur->isEnd;
     }
-    return cur->prefix;
-}
 
-int main()
-{
-      init();
-      for(int i = 1; i<= 5;i++)
-      {
-          string s;
-          cin>>s;
-          add(s);
-          cin>>s;
-          pf("%d\n",cnt_prefix(s));
-      }
-      return 0;
+    int countPrefix(string s) {
+        Node* cur = head;
+        int len = (int) s.size();
+
+        for (int i = 0; i < len; i++) {
+            int id = s[i] - 'a';
+            if (cur->child[id] == NULL) {
+                return 0;
+            }
+            cur = cur->child[id];
+        }
+        return cur->prefix;
+    }
+};
+
+int main() {
+    TrieTree trie;
+    for (int i = 0; i < 5; i++) {
+        cout << "Enter string: " << endl;
+        string str; cin >> str;
+        trie.add(str);
+        cout << trie.countPrefix(str) << endl;
+    }
+    return 0;
 }
