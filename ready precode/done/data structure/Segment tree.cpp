@@ -1,88 +1,71 @@
-#define mx 100001
+#include<bits/stdc++.h>
+using namespace std;
 
-int arr[mx];
-
-int tree[mx*3];
-
-void init(int node , int b , int e)
-{
-    if(b == e)
-    {
-        tree[node] = arr[b];
-
-        return;
+/* Segment tree to find sum of numbers between indexes L to R*/
+class SegTree {
+private:
+    int N;
+    vector<int> tree;
+public:
+    SegTree(int _nodes) {
+        N = _nodes;
+        tree = vector<int>(3 * N, 0);
     }
 
-    int Left = node * 2;
+    void update(int node, int left, int right, int qLeft, int qRight, int value) {
+        if (left > qRight || right < qLeft) return;
+        if (left >= qLeft && right <= qRight) {
+            tree[node] = value;
+            return;
+        }
 
-    int Right = node * 2 + 1;
+        int leftChild = 2 * node, rightChild = leftChild + 1, mid = (left + right) / 2;
 
-    int mid = ( b + e ) / 2;
+        update(leftChild, left, mid, qLeft, qRight, value);
+        update(rightChild, mid + 1, right, qLeft, qRight, value);
 
-    init(Left,b,mid);
-
-    init(Right,mid+1,e);
-
-    tree[node] = tree[Left]+tree[Right];
-}
-int query(int node,int b,int e,int i,int j)
-{
-    if (i > e || j < b) return 0;
-    if (b >= i && e <= j) return tree[node];
-
-    int Left = node * 2;
-
-    int Right = node * 2 + 1;
-
-    int mid = ( b+e ) / 2;
-
-    int p1 = query(Left , b , mid , i , j);
-
-    int p2 = query(Right , mid+1 , e , i , j);
-
-    return p1 + p2;
-}
-
-void update(int node,int b,int e,int i,int newvalue)
-{
-    if (i > e || i < b) return;
-    if (b >= i && e <= i) {
-    tree[node] = newvalue;
-    return;
+        tree[node] = tree[leftChild] + tree[rightChild];
     }
 
-    int Left = node * 2;
+    void update(int index, int value) {
+        update(1, 1, N, index, index, value);
+    }
 
-    int Right = node * 2 + 1;
+    int query(int node, int left, int right, int qLeft, int qRight) {
+        if (left > qRight || right < qLeft) return 0;
+        if (left >= qLeft && right <= qRight) return tree[node];
 
-    int mid = (b+e)/2;
+        int leftChild = 2 * node, rightChild = leftChild + 1, mid = (left + right) / 2;
 
-    update(Left , b , mid , i , newvalue);
+        int leftSum = query(leftChild, left, mid, qLeft, qRight);
+        int rightSum = query(rightChild, mid + 1, right, qLeft, qRight);
 
-    update(Right , mid+1 , e , i , newvalue);
+        return (leftSum + rightSum);
+    }
 
-    tree[node] = tree[Left] + tree[Right];
-}
-int main()
-{
-    int n;
+    int query(int left, int right) {
+        return query(1, 1, N, left, right);
+    }
+};
 
-    cin>>n;
+int main() {
+    vector<int> arr = {0, 1, 2, 3, 4, 5, 6};
+    SegTree segTree(6);
 
-    repl(i,n)
-    cin>>arr[i];
+    for (int i = 1; i <= 6; i++) {
+        segTree.update(i, arr[i]);
+    }
 
-    init(1,1,n);
+    for (int i = 1; ; i++) {
+        cout << "Enter range: ";
 
-    update(1,1,n,2,0);
+        int left, right;
+        cin >> left >> right;
 
-    cout<<query(1,1,n,1,3)<<endl;
-
-    update(1,1,n,2,2);
-
-    cout<<query(1,1,n,2,2)<<endl;
-
+        if (left == -1 && right == -1) break;
+        cout << segTree.query(left, right) << endl;
+    }
     return 0;
 }
 
-complexity : O(nlogn) . n = number of nodes
+/* Complexity: nlog(n) */
