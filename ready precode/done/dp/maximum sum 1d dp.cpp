@@ -1,14 +1,12 @@
 #include<iostream>
 using namespace std;
 
-int maxSubArraySum(int a[], int size)
-{
+int maxSubArraySum(int a[], int size) {
    int max_so_far = 0, max_ending_here = 0;
    int mx_single = INT_MIN;//
 
-   for (int i = 0; i < size; i++)
-   {
-       mx_single = max(mx_single,a[i]);
+   for (int i = 0; i < size; i++) {
+       mx_single = max(mx_single, a[i]);
        max_ending_here = max_ending_here + a[i];
 
        if (max_ending_here < 0)
@@ -19,7 +17,7 @@ int maxSubArraySum(int a[], int size)
        else if (max_so_far < max_ending_here)
            max_so_far = max_ending_here;
    }
-   if(mx_so_far == 0)return mx_single;// if all number are negative
+   if (mx_so_far == 0) return mx_single;// if all number are negative
    return max_so_far;
 }
 

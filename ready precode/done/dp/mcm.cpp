@@ -1,50 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SIZ 100+5
+const int N = (int) 2e5;
+const int inf = (int) 2e9;
 
-int row[SIZ],col[SIZ],dp[SIZ][SIZ];
+int row[N], col[N], dp[N][N];
 
-int rec(int beg , int end)
-{
-    if(beg >= end)return 0;
+int rec(int beg, int end) {
+    if (beg >= end)return 0;
+    if (dp[beg][end] != -1) return dp[beg][end];
 
-    if(dp[ beg ][ end ] != -1)return dp[ beg ][ end ];
+    int ans = inf;
 
-    int ans = p_inf;
+    for (int mid = beg; mid < end; mid++) {
+        int lft = rec(beg, mid);
+        int rt = rec(mid + 1, end);
 
-    for(int mid = beg , mid < end ; mid++)
-    {
-
-        int lft = rec(beg , mid);
-
-        int rt = rec( mid+1 , end);
-
-        int extra = row[ beg ] * col[ mid ] * cod[ end ];
-
+        int extra = row[beg] * col[mid] * cod[end];
         int total = lft + rt + extra;
 
-        ans = min(ans , total);
+        ans = min(ans, total);
     }
-    return dp[ beg ][ end ] = ans;
+
+    return dp[beg][end] = ans;
 }
 
-int main()
-{
-#ifndef ONLINE_JUDGE
-    //Read;
-    //Write;
-#endif
+int main() {
     int n;
-    sc1i(n);
+    scanf("%d", &n);
 
-    for(int i = 0 ; i < n ; i++)
-    {
-        cin>>row[i]>>col[i];
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &row[i], &col[i]);
     }
 
-    cout<<rec(0,n-1)<<endl;
+    printf("%d\n", rec(0, n - 1));
 
     return 0;
 }
-complexity = O(n^3)
+
+/* complexity = O(n^3) */
