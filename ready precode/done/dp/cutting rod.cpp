@@ -1,35 +1,29 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int rec(int price[] , int n)
-{
-    int val[n+1];
+const int inf = (int) 2e9;
 
-    val[0] = 0;
+int solve(vector<int> &price) {
+    int n = (int) price.size();
+    vector<int> dp(n + 1, 0);
 
-    for(int i = 1; i <= n ; i++)
-    {
-        int max_val = INT_MIN;
+    for (int i = 1; i <= n; i++) {
+        int max_val = -inf;
 
-        for(int j = 0; j < i ; j++)
-        {
-            max_val = max( max_val , price[j] + val[i-j-1] );
+        for (int j = 0; j < i; j++) {
+            max_val = max(max_val, price[j] + dp[i - j - 1]);
         }
 
-        val[i] = max_val;
+        dp[i] = max_val;
     }
-    return val[n];
+    return dp[n];
 }
 
-int main()
-{
-      int a[] = {1, 5, 8, 9, 10, 17, 17, 20};
+int main() {
+      vector<int> price = {1, 5, 8, 9, 10, 17, 17, 20};
 
-      int n = sizeof(a)/sizeof(a[0]);
-
-      int ans = rec( a , n);
-
-      pf("maximum obtainable value %d\n",ans);
+      int ans = solve(price);
+      printf("maximum obtainable value %d\n", ans);
 
       return 0;
 }

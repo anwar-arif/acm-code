@@ -1,38 +1,33 @@
-int coin[] = {5,8,11,15,18}; //value of coins available
+#include<bits/stdc++.h>
+using namespace std;
 
-int make = 18; //we will try to make 18
+/*
+Number of ways to make an amount with given coins
+*/
+int solve(int idx, int n, int make, vector<int> &coin,
+    vector<vector<int>> &dp) {
 
-int dp[6][100];
+    if (make < 0) return 0;
+    if (idx >= n) return make == 0;
 
-int call(int i,int amount)
-{
-    if(i >= 5)
-    {
-        if(amount == 0)return 1;
+    int &ret = dp[idx][make];
+    if (ret != -1) return ret;
 
-        else return 0;
-    }
-
-    if(dp[i][amount] != -1) return dp[i][amount];
-
-    int ret1 = 0 , ret2 = 0;
-
-    if(amount - coin[i] >= 0) ret1 = call( i , amount - coin[i]);
-
-    ret2 = call( i + 1 , amount);
-
-    return dp[i][amount] = ret1 | ret2;
-
+    return ret = solve(idx, n, make - coin[idx], coin, dp)
+                + solve(idx + 1, n, make, coin, dp);
 }
-int main()
-{
-	memset(dp,-1,sizeof(dp));
 
-	while(cin>>make)
-	{
-		cout<<call(0,make)<<endl;
-	}
+int main() {
+    int n, make; scanf("%d %d", &n, &make);
+    vector<int> coin(n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &coin[i]);
+    }
+    vector<vector<int>> dp(n, vector<int>(make + 1, -1));
+    printf("%d\n", solve(0, n, make, coin, dp));
+
     return 0;
 }
 
-Complexity : O(number of coin * make);
+/* Complexity : O(number of coin * make) */
