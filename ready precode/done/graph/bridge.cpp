@@ -1,57 +1,75 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int N = (int) 2e5 + 10;
+class Bridge {
+private:
+    int nodes, timer;
+    vector<vector<int>> adj;
+    vector<int> tin, low;
+    vector<bool> visited;
+    vector<pair<int, int>> bridges;
+public:
+    Bridge(int _nodes) {
+        nodes = _nodes;
+        timer = 0;
 
-int vis[N], par[N], fin[N], dis[N];
-vector<pair<int, int>>bridge;
-vector<int> adj[N];
+        adj.assign(nodes + 1, vector<int>());
+        bridges.clear();
 
-int n, edge, depth;
+        tin.assign(nodes + 1, -1);
+        low.assign(nodes + 1, -1);
+        visited.assign(nodes + 1, false);
+    }
 
-void dfs(int u) {
-    vis[u] = 1 ;
-    fin[u] = dis[u] = depth++ ;
-    int len = (int) adj[u].size();
-    for (int i = 0; i < len; i++) {
-        int v = adj[u][i];
-        if (par[u] != v) {
-            if (!vis[v]) {
-                par[v] = u;
-                dfs(v);
-                if (fin[u] < dis[v]) {
-                    bridge.push_back({min(u, v), max(u, v)}));
+    void addEdge(int from, int to) {
+        adj[from].push_back(to);
+        adj[to].push_back(from);
+    }
+
+    void dfs(int cur, int par = -1) {
+        visited[cur] = true;
+        tin[cur] = low[cur] = timer++;
+        for (int to: adj[cur]) {
+            if (to == par) continue;
+            if (visited[to]) {
+                low[cur] = min(low[cur], tin[to]);
+            } else {
+                dfs(to, cur);
+                low[cur] = min(low[cur], low[to]);
+                if (low[to] > low[cur]) {
+                    bridges.push_back({cur, to});
                 }
-                dis[u] = min(dis[u], dis[v]);
-            }
-            else {
-                dis[u] = min(dis[u], fin[v]);
             }
         }
     }
-}
+
+    vector<pair<int, int>> getBridges() {
+        for (int i = 1; i <= nodes; i++) {
+            if (!visited[i]) {
+                dfs(i);
+            }
+        }
+        return bridges;
+    }
+};
 
 int main() {
-    scanf("%d", &n);
-    scanf("%d", &edge);
-    for (int i = 0; i < edge; i++) {
-        int u, v; scanf("%d %d", &u, &v);
-        adj[u].push_back(v);
-    }
-    for (int i = 1; i <= n; i++) {
-        if (!vis[i]) dfs(i);
-    }
+//    freopen("in.txt", "r", stdin);
 
-    sort (bridge.begin(), bridge.end());
-    printf("Total Bridge = %d\n", bridge.size());
+    int nodes, edges; scanf("%d %d", &nodes, &edges);
+    Bridge bridge(nodes);
 
-    for (int i = 0; i < bridge.size(); i++) {
-        printf("%d - %d\n", bridge[i].first, bridge[i].second);
+    for (int i = 0; i < edges; i++) {
+        int from, to; scanf("%d %d", &from, &to);
+        bridge.addEdge(from, to);
     }
 
-    return 0 ;
+    auto answer = bridge.getBridges();
+    for (auto p: answer) {
+        cout << p.first << " => " << p.second << endl;
+    }
+    return 0;
 }
 /*
-complexity O(V + E)
-works in undirected graph
+complexity: O(V + E)
 */
