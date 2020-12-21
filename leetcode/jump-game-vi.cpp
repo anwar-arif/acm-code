@@ -1,11 +1,3 @@
-/**
- * @file jump-game-vi
- * @author Anwar Hossain <anwararif727@gmail.com>
- *
- * @date Monday December 21 2020
- *
- * @brief 
- */
 
 class Solution {
 public:
