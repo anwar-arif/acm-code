@@ -9,9 +9,8 @@
 class Solution {
 public:
     int inf = (int) 2e9;
-    vector<vector<int>> adj;
     
-    int can(vector<int> &a, vector<int> &b) {
+    int canStack(vector<int> &a, vector<int> &b) {
         for (int k = 0; k < 3; k++) {
             if (a[k] < b[k]) return false;
         }
@@ -27,7 +26,7 @@ public:
         ret = 0;
         for (int i = 0; i < n; i++) {
             if (cur == i) continue;
-            if (can(cuboids[cur], cuboids[i])) {
+            if (canStack(cuboids[cur], cuboids[i])) {
                 ret = max(ret, solve(i, dp, cuboids));
             }
         }
