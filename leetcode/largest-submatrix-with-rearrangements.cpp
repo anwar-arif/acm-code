@@ -1,4 +1,6 @@
 class Solution {
+private:
+    const int inf = (int) 2e9;
 public:
     int largestSubmatrix(vector<vector<int>> &matrix) {
         int rows = (int) matrix.size();
