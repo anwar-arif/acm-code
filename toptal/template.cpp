@@ -1,4 +1,6 @@
 #include<bits/stdc++.h>
+// #include<iomanip>
+// #include<ctime>
 using namespace std;
 
 struct StringUtil {
@@ -62,7 +64,7 @@ struct DateUtil {
         int tm_yday;			// Days in year.[0-365]	
         int tm_isdst;			// DST.		[-1/0/1]
     */
-    tm* getTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0) {
+    tm* buildTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0) {
         time_t now = time(0);
         tm* ltm = localtime(&now);
         ltm->tm_year = year - 1900;
@@ -75,25 +77,33 @@ struct DateUtil {
     }
 
     string timeToString(tm* ltm, string format = "") {
-        if (format.empty()) format = "%d/%m/%Y %H:%M:%S";
+        if (format.empty()) format = "%d-%m-%Y %H:%M:%S";
         const char* fmt = format.c_str();
-        char buffer[256];
-        strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", ltm);
-        return string(buffer);
+        ostringstream oss;
+        oss << put_time(ltm, fmt);
+        string timeString = oss.str();
+        return timeString;
     }
 
-    tm parseDateTime() {
+    tm parseDateTime(string dateTime, string format) {
         struct tm tm;
         char buf[255];
+        const char* fmt = format.c_str();
+        const char* date = dateTime.c_str();
+
         memset(&tm, 0, sizeof(struct tm));
-        strptime("2001-11-12 18:31:01", "%Y-%m-%d %H:%M:%S", &tm);
+        // strptime("2001-11-12 18:31:01", "%Y-%m-%d %H:%M:%S", &tm);
+        strptime(date, fmt, &tm);
         strftime(buf, sizeof(buf), "%d %b %Y %H:%M", &tm);
         puts(buf);
         return tm;
     }
 
-    void testing() {
-        tm *ltm = getTime(2021, 12, 4);
+    void run() {
+        tm *ltm = buildTime(2021, 12, 4);
+        string timeStr = timeToString(ltm);
+        string format = "%d-%m-%Y %H:%M:%S";
+        tm *parsedTime = parseDateTime(timeStr, format);
 
         cout << "Year:" << 1900 + ltm->tm_year<<endl;
         cout << "Month: "<< 1 + ltm->tm_mon<< endl;
@@ -109,5 +119,22 @@ struct DateUtil {
 };
 
 int main() {
-    DateUtil{}.testing();
+    DateUtil{}.run();
+    // auto t = time(nullptr);
+    // auto tm = *localtime(&t);
+    // cout << put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
 }
+
+/*
+StringUtil
+- trim (done)
+- split (done)
+- replace (done)
+
+DateUtil
+- buildDate (done)
+- dateToString (done)
+- stringToDate
+- compareDate
+
+*/
