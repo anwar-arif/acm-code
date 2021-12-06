@@ -67,8 +67,8 @@ struct DateUtil {
     tm* buildTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0) {
         time_t now = time(0);
         tm* ltm = localtime(&now);
-        ltm->tm_year = year - 1900;
-        ltm->tm_mon = month - 1;
+        ltm->tm_year = year;
+        ltm->tm_mon = month;
         ltm->tm_mday = day;
         ltm->tm_hour = hour;
         ltm->tm_min = minute;
@@ -94,7 +94,7 @@ struct DateUtil {
         memset(&tm, 0, sizeof(struct tm));
         // strptime("2001-11-12 18:31:01", "%Y-%m-%d %H:%M:%S", &tm);
         strptime(date, fmt, &tm);
-        strftime(buf, sizeof(buf), "%d %b %Y %H:%M", &tm);
+        strftime(buf, sizeof(buf), "%d %B %Y %H:%M", &tm);
         puts(buf);
         return tm;
     }
@@ -103,7 +103,8 @@ struct DateUtil {
         tm *ltm = buildTime(2021, 12, 4);
         string timeStr = timeToString(ltm);
         string format = "%d-%m-%Y %H:%M:%S";
-        tm *parsedTime = parseDateTime(timeStr, format);
+        tm parsedTime = parseDateTime(timeStr, "%d-%m-%Y %H:%M:%S");
+        ltm = &parsedTime;
 
         cout << "Year:" << 1900 + ltm->tm_year<<endl;
         cout << "Month: "<< 1 + ltm->tm_mon<< endl;
