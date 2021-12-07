@@ -63,6 +63,10 @@ struct DateUtil {
     */
     const string DefaultFormat = "%d-%m-%Y %H:%M:%S";
     tm baseTime;
+
+    DateUtil() {
+        init();
+    }
     
     // initialize baseTime e.g year in base time 1970
     void init() {
@@ -182,9 +186,8 @@ struct DateUtil {
 };
 
 int main() {
-    DateUtil D = DateUtil{};
-    StringUtil S = StringUtil{};
-    D.init();
+    DateUtil D = DateUtil();
+    StringUtil S = StringUtil();
     D.run();
 }
 
