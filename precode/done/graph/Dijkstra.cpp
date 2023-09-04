@@ -47,6 +47,11 @@ int Dij(int s, int t) {
     return -1;
 }
 
+/**
+ * TIme complexity O(E + VlogV) where E = number of edges, V = number of nodes
+ * Here, priority_queue takes O(VlogV) to sort the nodes
+*/
+
 int main() {
 //    freopen("in.txt", "r", stdin);
     scanf("%d %d", &nodes, &edges);

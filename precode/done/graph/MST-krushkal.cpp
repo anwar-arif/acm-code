@@ -46,6 +46,11 @@ void mst() {
     printf("mst: %d\n", sum);
 }
 
+/**
+ * Sorting the edges takes O(ElogE) where E = number of edges
+ * So, overall time complexity is O(ElogE)
+*/
+
 int main() {
 //    freopen("in.txt", "r", stdin);
     scanf("%d %d", &nodes, &edges);

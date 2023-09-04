@@ -42,6 +42,11 @@ void solve() {
     printf("\n");
 }
 
+/**
+ * Time compelxity O(V + E) 
+ * where V = Number of nodes, E = number of edges
+*/
+
 int main() {
 //    freopen("in.txt", "r", stdin);
     scanf("%d %d", &nodes, &edges);

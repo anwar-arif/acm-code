@@ -61,6 +61,10 @@ public:
     }
 };
 
+/**
+ * Time complexity O(textLen + patternLen) 
+*/
+
 int main() {
     string text = "codeforces";
     string pattern = "e";
@@ -75,6 +79,3 @@ int main() {
 
     return 0;
 }
-/*
-Time complexity O(textLen + patternLen)
-*/

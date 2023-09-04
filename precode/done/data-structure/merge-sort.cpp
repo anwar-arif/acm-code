@@ -50,6 +50,11 @@ void printArray(vector<int> &nums) {
     cout << endl;
 }
 
+/**
+ * Time compelxity O(NlogN) 
+ * where N = number of elements in the array
+*/
+
 int main() {
     vector<int> nums {4, 2, 1, 3, 6, 4, 5};
     
