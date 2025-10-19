@@ -39,7 +39,30 @@ void splitByWord() {
     }
 }
 
+void ltrim(string &word) {
+    // find first alphabet from beginning
+    auto pos = word.find_first_not_of(" \r\t\n");
+    if (pos == string::npos) return;
+    word = word.substr(pos);
+}
+
+void rtrim(string &word) {
+    // find last non-alpha from the end
+    auto pos = word.find_last_of(" \t\r\n");
+    if (pos == string::npos) return;
+    word = word.substr(0, pos);
+}
+
+void trim() {
+    string word = " first_name ";
+    cout << "before trim: " << word << endl;
+    ltrim(word);
+    rtrim(word);
+    cout << "after trim: " << word << endl;
+}
+
 int main() {
     splitByChar();
     splitByWord();
+    trim();
 }
