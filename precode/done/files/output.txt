@@ -1,0 +1,8 @@
+Name,Type,Weight
+Tyrannosaurus Rex,Theropod,7000
+Triceratops,Ceratopsid,6000
+Velociraptor,Theropod,15
+Stegosaurus,Stegosaur,5000
+Brachiosaurus,Sauropod,80000
+Allosaurus,Theropod,2300
+Parasaurolophus,Ornithopod,2500
